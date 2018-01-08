@@ -8,3 +8,4 @@
  - [ ] Ability to switch between different measurements to display in chart.
  - [ ] On every new record creation/edit/delete save records to localStorage
  - [ ] When app starts check if localstorage is not empty. If it is not empty set initial state. (hint: use `componentWillMount(){...}` on the `App`)
+ - [ ] Use `ResponsiveContainer` for chart (hint: http://recharts.org/#/en-US/api/ResponsiveContainer )
