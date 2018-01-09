@@ -55,20 +55,20 @@ export default class NewRecordModal extends Component {
   }, {});
 
   state = {
-    values: this.emptyValues,
+    value: this.emptyValues,
   };
 
   submitForm = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state.values);
+    this.props.onSubmit(this.state.value);
     this.setState({
-      values: this.emptyValues,
+      value: this.emptyValues,
     });
   };
 
   createOnChange = (measurementName) => (event) => {
     this.setState({
-      values: { ...this.state.values, [measurementName]: event.target.value },
+      value: { ...this.state.value, [measurementName]: event.target.value },
     });
   };
 
@@ -89,7 +89,7 @@ export default class NewRecordModal extends Component {
                       {type.name}
                       <br />
                       <input
-                        type="number" name={type.value} value={this.state.values[type.value]}
+                        type="number" name={type.value} value={this.state.value[type.value]}
                         onChange={this.createOnChange(type.value)}
                       />
                     </label>
