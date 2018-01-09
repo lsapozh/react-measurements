@@ -16,6 +16,13 @@ const AddNewRecord = styled.button`
   background-color: red;
 `;
 
+const RecordsDiv = styled.div`
+  position: relative;
+  // top: 10px;
+  // bottom: 40px;
+  margin: 10px 0 50px 0;
+`;
+
 class App extends Component {
     state = {
         newRecordModalOpened: false,
@@ -67,10 +74,25 @@ class App extends Component {
             newRecordModalOpened: false,
         });
         const newRecord = values;
-        newRecord.date = new Date();
-        this.setState({
-            records: [...this.state.records, newRecord]
-        })
+        const newDate = new Date();
+        newRecord.date = newDate;
+        let dates = this.state.records.map((record) => {
+            return this.formatDate(record.date);
+        });
+
+
+        if (dates.includes(this.formatDate(newDate))) {
+            let id = dates.indexOf(this.formatDate(newDate));
+            console.log(id);
+            this.setState({
+                records: [...this.state.records.slice(0, id), newRecord, ...this.state.records.slice(id + 1, this.state.records.length)]
+            })
+        } else {
+            this.setState({
+                records: [...this.state.records, newRecord]
+            })
+        }
+
     };
 
     formatDate = (d) => {
@@ -121,34 +143,31 @@ class App extends Component {
                 <div className="chartWrapper">
                     <MeasurementChart records={this.state.records} measurement="weight"/>
                 </div>
-                <div className="measurementsTableWrapper">
-                    <div>{[...this.state.records].reverse().map((record, index) => {
-                        return (
-                            <div key={index}>
-                                <h4>
-                                    {this.formatDate(record.date)}
-                                </h4>
-                                <DeleteButton onClick={this.makeDeleteRecord(index)}>Delete</DeleteButton>
+                <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
+                    return (
+                        <div key={index}>
+                            <h4>
+                                {this.formatDate(record.date)}
+                            </h4>
+                            <DeleteButton onClick={this.makeDeleteRecord(index)}>Delete</DeleteButton>
 
-                                <EditButton onClick={this.makeEditRecordModal(index)}>Edit</EditButton>
-                                {MEASUREMENT_TYPES.map((type, index) => {
-                                    if (record[type.value]) return (
-                                        <div key={index}>
-                                            <p>
-                                                {type.name + ": " + record[type.value]}
-                                            </p>
-                                        </div>
-                                    );
-                                    return null;
-                                })}
-                            </div>
-                        );
+                            <EditButton onClick={this.makeEditRecordModal(index)}>Edit</EditButton>
+                            {MEASUREMENT_TYPES.map((type, index) => {
+                                if (record[type.value]) return (
+                                    <div key={index}>
+                                        <p>
+                                            {type.name + ": " + record[type.value]}
+                                        </p>
+                                    </div>
+                                );
+                                return null;
+                            })}
+                        </div>
+                    );
 
-                    })}
-                    </div>
+                })}
+                </RecordsDiv>
 
-
-                </div>
                 <EditRecordModal record={this.state.recordForEdit} open={this.state.editRecordModalOpen} onClose={this.closeEditRecordModal}
                                  onSubmit={this.editRecord}/>
 

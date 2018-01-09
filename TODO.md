@@ -3,7 +3,7 @@
  - [x] Restyle table to look better on smaller screens (div?)
  - [x] Ability to delete a record
  - [x] Ability to edit a record
- - [ ] When adding a record with a date that is already in the list, instead of creating a new record, replace existing one (hint: don't compare "dates" directly, instead compare formatDate(date))
+ - [x] When adding a record with a date that is already in the list, instead of creating a new record, replace existing one (hint: don't compare "dates" directly, instead compare formatDate(date))
  - [ ] make sure that charts ignore records with "empty" values. So if you have `weight: 1, weight: null, weight: 2` it should only render chart for `weight: 1, weight: 2` (you can use filter inside of chart)
  - [ ] Ability to switch between different measurements to display in chart.
  - [ ] On every new record creation/edit/delete save records to localStorage
