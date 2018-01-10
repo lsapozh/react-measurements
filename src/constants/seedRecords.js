@@ -2,14 +2,17 @@ const seedRecords = [
     {
         date: new Date(2017, 11, 26),
         weight: 60,
+        chest: 50,
     },
     {
         date: new Date(2017, 11, 27),
         weight: 80,
+        chest: 50,
     },
     {
         date: new Date(2017, 11, 28),
         weight: 60,
+        chest: 60,
     },
     {
         date: new Date(2017, 11, 29),
@@ -18,10 +21,12 @@ const seedRecords = [
     {
         date: new Date(2017, 11, 30),
         weight: 60,
+        chest: 70,
     },
     {
         date: new Date(2017, 11, 31),
         weight: 80,
+        chest: 54,
     },
     {
         date: new Date(2018, 0, 1),

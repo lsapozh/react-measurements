@@ -19,9 +19,19 @@ const AddNewRecord = styled.button`
 
 const RecordsDiv = styled.div`
   position: relative;
-  // top: 10px;
-  // bottom: 40px;
   margin: 10px 0 50px 0;
+`;
+
+const MeasurementTypesDiv = styled.div`
+   
+`;
+
+const MeasurementDiv = styled.div`
+    // background-color: red;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 0 10px 0 10px;
 `;
 
 class App extends Component {
@@ -31,6 +41,8 @@ class App extends Component {
         editRecordId: 0,
         recordForEdit: {},
         records: [],
+        currentChart: MEASUREMENT_TYPES[0].value,
+        previousChart: MEASUREMENT_TYPES[0].value
     };
 
     openNewRecordModal = () => {
@@ -85,7 +97,6 @@ class App extends Component {
 
     makeEditRecordModal = (id) => (e) => {
         const indexEdit = this.state.records.length - id - 1;
-        // console.log(indexEdit, this.state.records, this.state.records[indexEdit]);
         const currentRecord = this.state.records[indexEdit];
         this.setState({
             recordForEdit: currentRecord,
@@ -130,6 +141,29 @@ class App extends Component {
         }
     }
 
+    componentDidMount() {
+        document.getElementById(this.state.currentChart).style.backgroundColor = "rgb(136, 132, 216)";
+        let htmlElements = document.getElementsByClassName("measurementTypesForChart");
+        let chartTypes = Array.prototype.slice.call(htmlElements);
+        chartTypes.forEach((type) => {
+                type.style.cursor = 'pointer';
+        });
+        for (let i = 0; i < htmlElements.length; i++) {
+            htmlElements[i].onclick = (event) => {
+                let previousType = this.state.currentChart;
+                this.setState({
+                    currentChart: chartTypes[i].id,
+                    previousChart: previousType
+                });
+            }
+        }
+    }
+
+    componentDidUpdate() {
+        document.getElementById(this.state.currentChart).style.backgroundColor = "rgb(136, 132, 216)";
+        document.getElementById(this.state.previousChart).style.backgroundColor = "white";
+    }
+
     saveToLocalStorage = () => {
         localStorage.setItem("records", JSON.stringify(this.state.records));
     };
@@ -138,7 +172,19 @@ class App extends Component {
         return (
             <div className="app">
                 <div className="chartWrapper">
-                    <MeasurementChart records={this.state.records} measurement="weight"/>
+                    <MeasurementTypesDiv>
+                        {MEASUREMENT_TYPES.map((type, index) => {
+                            return (
+                                <MeasurementDiv key={index} id={type.value} className={"measurementTypesForChart"}>
+                                    <p>
+                                        {type.name}
+                                    </p>
+                                </MeasurementDiv>
+                            );
+                        })}
+
+                    </MeasurementTypesDiv>
+                    <MeasurementChart records={this.state.records} measurement={this.state.currentChart}/>
                 </div>
                 <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
                     return (
@@ -167,7 +213,6 @@ class App extends Component {
 
                 <EditRecordModal record={this.state.recordForEdit} open={this.state.editRecordModalOpen} onClose={this.closeEditRecordModal}
                                  onSubmit={this.editRecord}/>
-
                 <NewRecordModal open={this.state.newRecordModalOpened} onClose={this.closeNewRecordModal}
                                 onSubmit={this.createNewRecord}/>
                 <AddNewRecord className="newRecordButton" onClick={this.openNewRecordModal}>
