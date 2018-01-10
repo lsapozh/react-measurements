@@ -7,6 +7,7 @@ import MeasurementChart from 'components/MeasurementChart';
 import DeleteButton from "./components/DeleteButton";
 import EditButton from "./components/EditButton";
 import EditRecordModal from "./components/EditRecordModal";
+import seedRecords from "./constants/seedRecords";
 
 const AddNewRecord = styled.button`
   position: fixed;
@@ -114,7 +115,6 @@ class App extends Component {
 
     componentWillMount(){
         // localStorage.clear();
-        console.log(this.state.records);
         if (localStorage.getItem("records")) {
             let items = JSON.parse(localStorage.getItem("records"));
             items.forEach((record) => {
@@ -125,33 +125,8 @@ class App extends Component {
             })
         } else {
             this.setState({
-                records: [
-                {
-                    date: new Date(2018, 0, 1),
-                    weight: 80,
-                },
-                {
-                    date: new Date(2018, 0, 2),
-                    weight: 21
-                },
-                {
-                    date: new Date(2018, 0, 3),
-                    weight: 30
-                },
-                {
-                    date: new Date(2018, 0, 6),
-                    weight: 60
-                },
-                {
-                    date: new Date(2018, 0, 8),
-                    weight: 50
-                },
-                {
-                    date: new Date(2018, 0, 9),
-                    weight: 30
-                },
-                ]
-            }, () => console.log("*****", this.state.records))
+                records: seedRecords
+            })
         }
     }
 

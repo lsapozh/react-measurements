@@ -8,7 +8,7 @@ export default class MeasurementChart extends Component {
 
   render() {
     const { measurement, records } = this.props;
-    const sortedRecords = [...records];
+    const sortedRecords = [...records.filter((r) => r[measurement])];
     sortedRecords.sort((r1, r2) => r1.date.getTime() - r2.date.getTime());
     const finalRecords = [];
     for (let i = 0; i < sortedRecords.length - 1; i += 1) {
@@ -27,6 +27,7 @@ export default class MeasurementChart extends Component {
         }
       }
     }
+    finalRecords.push(sortedRecords[sortedRecords.length - 1]);
     const data = finalRecords.map((record) => {
       return {
         xValue: this.formatDate(record.date),
@@ -40,10 +41,10 @@ export default class MeasurementChart extends Component {
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <XAxis dataKey="xValue" />
-          <YAxis />
+          <YAxis domain={[0, 'dataMax + 50']} />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
-          <Area type='monotone' dataKey='yValue' stroke='#8884d8' fill='#8884d8' />
+          <Area type='linear' dataKey='yValue' stroke='#8884d8' fill='#8884d8' />
         </AreaChart>
       </div>
     );
