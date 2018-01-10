@@ -29,32 +29,7 @@ class App extends Component {
         editRecordModalOpen: false,
         editRecordId: 0,
         recordForEdit: {},
-        records: [
-            {
-                date: new Date(2018, 0, 1),
-                weight: 80,
-            },
-            {
-                date: new Date(2018, 0, 2),
-                weight: 21
-            },
-            {
-                date: new Date(2018, 0, 3),
-                weight: 30
-            },
-            {
-                date: new Date(2018, 0, 6),
-                weight: 60
-            },
-            {
-                date: new Date(2018, 0, 8),
-                weight: 50
-            },
-            {
-                date: new Date(2018, 0, 9),
-                weight: 30
-            },
-        ],
+        records: [],
     };
 
     openNewRecordModal = () => {
@@ -86,26 +61,26 @@ class App extends Component {
             console.log(id);
             this.setState({
                 records: [...this.state.records.slice(0, id), newRecord, ...this.state.records.slice(id + 1, this.state.records.length)]
-            })
+            }, () => this.saveToLocalStorage())
         } else {
             this.setState({
                 records: [...this.state.records, newRecord]
-            })
+            }, () => this.saveToLocalStorage())
         }
 
     };
 
     formatDate = (d) => {
         return d ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` : ''
-    }
+    };
 
     makeDeleteRecord = (index) => (e) => {
         const indexToDelete = this.state.records.length - index - 1;
         const newRecords = [...this.state.records.slice(0, indexToDelete), ...this.state.records.slice(indexToDelete + 1, this.state.records.length)]
         this.setState({
             records: newRecords
-        })
-    }
+        }, () => this.saveToLocalStorage())
+    };
 
     makeEditRecordModal = (id) => (e) => {
         const indexEdit = this.state.records.length - id - 1;
@@ -123,7 +98,7 @@ class App extends Component {
         this.setState({
             editRecordModalOpen: false,
         });
-    }
+    };
 
     editRecord = (value) => {
         this.setState({
@@ -133,9 +108,56 @@ class App extends Component {
         const id = this.state.editRecordId;
         this.setState({
             records: [...this.state.records.slice(0, id), editedRecord, ...this.state.records.slice(id + 1, this.state.records.length)]
-        })
+        }, () => this.saveToLocalStorage())
+
+    };
+
+    componentWillMount(){
+        // localStorage.clear();
+        console.log(this.state.records);
+        if (localStorage.getItem("records")) {
+            let items = JSON.parse(localStorage.getItem("records"));
+            items.forEach((record) => {
+                record.date = new Date(record.date);
+            });
+            this.setState({
+                records: items
+            })
+        } else {
+            this.setState({
+                records: [
+                {
+                    date: new Date(2018, 0, 1),
+                    weight: 80,
+                },
+                {
+                    date: new Date(2018, 0, 2),
+                    weight: 21
+                },
+                {
+                    date: new Date(2018, 0, 3),
+                    weight: 30
+                },
+                {
+                    date: new Date(2018, 0, 6),
+                    weight: 60
+                },
+                {
+                    date: new Date(2018, 0, 8),
+                    weight: 50
+                },
+                {
+                    date: new Date(2018, 0, 9),
+                    weight: 30
+                },
+                ]
+            }, () => console.log("*****", this.state.records))
+        }
     }
 
+    saveToLocalStorage = () => {
+        localStorage.setItem("records", JSON.stringify(this.state.records));
+    };
 
     render() {
         return (
