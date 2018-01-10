@@ -42,7 +42,7 @@ class App extends Component {
         recordForEdit: {},
         records: [],
         currentChart: MEASUREMENT_TYPES[0].value,
-        previousChart: MEASUREMENT_TYPES[0].value
+        previousChart: MEASUREMENT_TYPES[0].value,
     };
 
     openNewRecordModal = () => {
@@ -123,6 +123,10 @@ class App extends Component {
         }, () => this.saveToLocalStorage())
 
     };
+    //
+    // componentDidCatch(error, info) {
+    //     console.log(error, info);
+    // }
 
     componentWillMount(){
         // localStorage.clear();
@@ -175,7 +179,7 @@ class App extends Component {
                     <MeasurementTypesDiv>
                         {MEASUREMENT_TYPES.map((type, index) => {
                             return (
-                                <MeasurementDiv key={index} id={type.value} className={"measurementTypesForChart"}>
+                                <MeasurementDiv key={index} id={type.value} className="measurementTypesForChart">
                                     <p>
                                         {type.name}
                                     </p>
@@ -184,7 +188,7 @@ class App extends Component {
                         })}
 
                     </MeasurementTypesDiv>
-                    <MeasurementChart records={this.state.records} measurement={this.state.currentChart}/>
+                    <MeasurementChart records={this.state.records} measurement={this.state.currentChart} id="chart"/>
                 </div>
                 <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
                     return (

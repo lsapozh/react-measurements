@@ -8,11 +8,13 @@ const seedRecords = [
         date: new Date(2017, 11, 27),
         weight: 80,
         chest: 50,
+        underboob: 34
     },
     {
         date: new Date(2017, 11, 28),
         weight: 60,
         chest: 60,
+        underboob: 33
     },
     {
         date: new Date(2017, 11, 29),
@@ -22,6 +24,7 @@ const seedRecords = [
         date: new Date(2017, 11, 30),
         weight: 60,
         chest: 70,
+        underboob: 44
     },
     {
         date: new Date(2017, 11, 31),
@@ -38,11 +41,13 @@ const seedRecords = [
     },
     {
         date: new Date(2018, 0, 3),
-        weight: 30
+        weight: 30,
+        underboob: 70
     },
     {
         date: new Date(2018, 0, 6),
-        weight: 100
+        weight: 100,
+        underboob: 90
     },
     {
         date: new Date(2018, 0, 8),
