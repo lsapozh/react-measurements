@@ -9,7 +9,7 @@ export const MEASUREMENT_TYPES = [
   },
   {
     value: "underboob",
-    name: "Underboob"
+    name: "UnderB"
   },
   {
     value: "weist",

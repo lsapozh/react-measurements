@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
-
+import {Message, ResponsiveContainerWrapper} from "./components/index";
 
 export default class MeasurementChart extends Component {
   formatDate = (d) => {
@@ -43,35 +43,27 @@ export default class MeasurementChart extends Component {
         });
     } catch (e) {
       return (
-          <div>
-            <h3>no data</h3>
-          </div>
+          <Message>
+              no data
+          </Message>
       )
     }
 
     return (
-        <div>
-          {/*<ResponsiveContainer width={700} height="80%">*/}
-            {/*<AreaChart data={data}*/}
-                       {/*margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>*/}
-              {/*<XAxis dataKey="xValue" />*/}
-              {/*<YAxis domain={[0, 'dataMax + 50']} />*/}
-              {/*<CartesianGrid strokeDasharray="3 3" />*/}
-              {/*<Tooltip />*/}
-              {/*<Area type='linear' dataKey='yValue' stroke='#8884d8' fill='#8884d8' />*/}
-            {/*</AreaChart>*/}
-          {/*</ResponsiveContainer>*/}
-          <AreaChart
-              width={800} height={400} data={data}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        <ResponsiveContainerWrapper>
+          <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                  width={800} height={400} data={data}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
-              <XAxis dataKey="xValue" />
-              <YAxis domain={[0, 'dataMax + 50']} />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Area type='linear' dataKey='yValue' stroke='#8884d8' fill='#8884d8' />
-          </AreaChart>
-      </div>
+                  <XAxis dataKey="xValue" />
+                  <YAxis domain={[0, 'dataMax + 50']} />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <Tooltip />
+                  <Area type='linear' dataKey='yValue' stroke='rgba(0, 139, 139, 0.9)' fill='rgba(0, 139, 139, 0.9)' />
+              </AreaChart>
+          </ResponsiveContainer>
+      </ResponsiveContainerWrapper>
     );
   }
 }

@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import {MEASUREMENT_TYPES} from 'constants/types';
 import NewRecordModal from 'components/NewRecordModal';
 import MeasurementChart from 'components/MeasurementChart';
-import DeleteButton from "./components/DeleteButton";
-import EditButton from "./components/EditButton";
 import EditRecordModal from "./components/EditRecordModal";
 import seedRecords from "./constants/seedRecords";
 
@@ -14,7 +12,10 @@ const AddNewRecord = styled.button`
   bottom: 0px;
   width: 100%;
   height: 40px;
-  background-color: red;
+  background-color: lightcoral;
+  font-size: 15px;
+  font-weight: 600;
+  // color: white;
 `;
 
 const RecordsDiv = styled.div`
@@ -22,17 +23,72 @@ const RecordsDiv = styled.div`
   margin: 10px 0 50px 0;
 `;
 
+const RecordDiv = styled.div`
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    width: 500px;
+    margin: 10px auto 10px auto;
+    background-color: rgba(139, 139, 139, 0.05);
+`;
+
+const RecordInfoDiv = styled.div`
+    display: inline-block;
+    position: relative;
+    width: 30%;
+    vertical-align: top;
+    margin-left: 15px;
+    font-size: 14px;
+    
+`;
+
+const RecordButtonsDiv = styled.div`
+    display: inline-block;
+    position: relative;
+    float: right;
+    vertical-align: top;
+    width: 20%;
+`;
+
+const DeleteButton = styled.button`
+    float: right;
+    width: 100%;
+    margin: 0px 15px 15px 0;
+    padding: 5px 0 5px 0;
+    font-size: 14px;
+    background-color: rgba(139, 139, 139, 0.5);
+    
+`;
+
+const EditButton = styled.button`
+    float: right;
+    width: 100%;
+    margin: 15px 15px 10px 0;
+    padding: 5px 0 5px 0;
+    font-size: 14px;
+    background-color: rgba(0, 139, 139, 1);
+    // color: white;
+`;
+
+const Clear = styled.div`
+    clear: both;
+`;
+
 const MeasurementTypesDiv = styled.div`
-   
+   width: 550px;
+   margin: 10px auto 10px auto;
+   background-color: rgba(139, 139, 139, 0.1);
 `;
 
 const MeasurementDiv = styled.div`
-    // background-color: red;
     display: inline-block;
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 0 10px 0 10px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 14.1%;
+    border: 0.5px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+    ${({ active }) => active && "background-color: #008b8bad"};
+    cursor: pointer;
 `;
+
 
 class App extends Component {
     state = {
@@ -41,8 +97,7 @@ class App extends Component {
         editRecordId: 0,
         recordForEdit: {},
         records: [],
-        currentChart: MEASUREMENT_TYPES[0].value,
-        previousChart: MEASUREMENT_TYPES[0].value,
+        selectedMeasurement: MEASUREMENT_TYPES[0].value
     };
 
     openNewRecordModal = () => {
@@ -145,71 +200,59 @@ class App extends Component {
         }
     }
 
-    componentDidMount() {
-        document.getElementById(this.state.currentChart).style.backgroundColor = "rgb(136, 132, 216)";
-        let htmlElements = document.getElementsByClassName("measurementTypesForChart");
-        let chartTypes = Array.prototype.slice.call(htmlElements);
-        chartTypes.forEach((type) => {
-                type.style.cursor = 'pointer';
-        });
-        for (let i = 0; i < htmlElements.length; i++) {
-            htmlElements[i].onclick = (event) => {
-                let previousType = this.state.currentChart;
-                this.setState({
-                    currentChart: chartTypes[i].id,
-                    previousChart: previousType
-                });
-            }
-        }
-    }
-
-    componentDidUpdate() {
-        document.getElementById(this.state.currentChart).style.backgroundColor = "rgb(136, 132, 216)";
-        document.getElementById(this.state.previousChart).style.backgroundColor = "white";
-    }
-
     saveToLocalStorage = () => {
         localStorage.setItem("records", JSON.stringify(this.state.records));
     };
 
+    makeSelectMeasurement = (type) => (e) => {
+        this.setState({
+            selectedMeasurement: type.value
+        })
+    }
+
     render() {
         return (
             <div className="app">
-                <div className="chartWrapper">
-                    <MeasurementTypesDiv>
-                        {MEASUREMENT_TYPES.map((type, index) => {
-                            return (
-                                <MeasurementDiv key={index} id={type.value} className="measurementTypesForChart">
-                                    <p>
-                                        {type.name}
-                                    </p>
-                                </MeasurementDiv>
-                            );
-                        })}
-
-                    </MeasurementTypesDiv>
-                    <MeasurementChart records={this.state.records} measurement={this.state.currentChart} id="chart"/>
-                </div>
+                <MeasurementTypesDiv>
+                    {MEASUREMENT_TYPES.map((type, index) => {
+                        return (
+                            <MeasurementDiv
+                                key={index}
+                                active={this.state.selectedMeasurement === type.value}
+                                onClick={this.makeSelectMeasurement(type)}
+                            >
+                                <p>
+                                    {type.name}
+                                </p>
+                            </MeasurementDiv>
+                        );
+                    })}
+                </MeasurementTypesDiv>
+                <MeasurementChart records={this.state.records} measurement={this.state.selectedMeasurement}/>
                 <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
                     return (
-                        <div key={index}>
-                            <h4>
-                                {this.formatDate(record.date)}
-                            </h4>
-                            <DeleteButton onClick={this.makeDeleteRecord(index)}>Delete</DeleteButton>
-
-                            <EditButton onClick={this.makeEditRecordModal(index)}>Edit</EditButton>
-                            {MEASUREMENT_TYPES.map((type, index) => {
-                                if (record[type.value]) return (
-                                    <div key={index}>
-                                        <p>
-                                            {type.name + ": " + record[type.value]}
-                                        </p>
-                                    </div>
-                                );
-                                return null;
-                            })}
-                        </div>
+                        <RecordDiv key={index}>
+                            <RecordInfoDiv>
+                                <h4>
+                                    {this.formatDate(record.date)}
+                                </h4>
+                                {MEASUREMENT_TYPES.map((type, index) => {
+                                    if (record[type.value]) return (
+                                        <div key={index}>
+                                            <p>
+                                                {type.name + ": " + record[type.value]}
+                                            </p>
+                                        </div>
+                                    );
+                                    return null;
+                                })}
+                            </RecordInfoDiv>
+                            <RecordButtonsDiv>
+                                <EditButton onClick={this.makeEditRecordModal(index)}>Edit</EditButton>
+                                <DeleteButton onClick={this.makeDeleteRecord(index)}>Delete</DeleteButton>
+                            </RecordButtonsDiv>
+                            <Clear></Clear>
+                        </RecordDiv>
                     );
 
                 })}

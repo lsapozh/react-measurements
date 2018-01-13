@@ -32,20 +32,28 @@ const ModalActions = styled.div`
 `;
 
 const Button = styled.button`
-  font-size: 20px;
-  border: 1px solid black;
+  font-size: 14px;
+  // border: 1px solid black;
   padding: 10px 20px;
-  border-radius: 5px;
+  // border-radius: 5px;
 `;
 
 const CancelButton = styled(Button)`
-  background-color: rgba(0, 0, 0, 0);
-  border-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(139, 139, 139, 0.5);
+  // border-color: rgba(0, 0, 0, 0.5);
 `;
 
 const EditButton = styled(Button)`
-  background-color: green;
-  color: white;  
+  background-color: rgba(0, 139, 139, 1);
+  // color: white;  
+`;
+
+const TypesDiv = styled.div`
+  font-size: 14px;
+`;
+
+const TypeDiv = styled.div`
+   margin-bottom: 5px;
 `;
 
 export default class NewRecordModal extends Component {
@@ -82,10 +90,10 @@ export default class NewRecordModal extends Component {
                 <ModalBody>
                     <form onSubmit={this.submitForm}>
                         <h1>Edit Record</h1>
-                        <div>
+                        <TypesDiv>
                             {MEASUREMENT_TYPES.map((type, index) => {
                                 return (
-                                    <div key={index}>
+                                    <TypeDiv key={index}>
                                         <label>
                                             {type.name}
                                             <br />
@@ -94,10 +102,10 @@ export default class NewRecordModal extends Component {
                                                 onChange={this.createOnChange(type.value)}
                                             />
                                         </label>
-                                    </div>
+                                    </TypeDiv>
                                 );
                             })}
-                        </div>
+                        </TypesDiv>
                         <ModalActions>
                             <CancelButton onClick={this.props.onClose}>Cancel</CancelButton>
                             <EditButton>Update</EditButton>
