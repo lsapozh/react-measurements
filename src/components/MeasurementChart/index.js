@@ -42,8 +42,8 @@ export default class MeasurementChart extends Component {
             <ResponsiveContainerWrapper>
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
-                        width={800} height={400} data={data}
-                        margin={{top: 10, right: 30, left: 0, bottom: 0}}
+                        data={data}
+                        margin={{top: 10, right: 0, left: 0, bottom: 0}}
                     >
                         <XAxis dataKey="xValue"/>
                         <YAxis domain={[0, 'dataMax + 50']}/>

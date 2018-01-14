@@ -25,7 +25,7 @@ const RecordsDiv = styled.div`
 
 const RecordDiv = styled.div`
     border: 0.5px solid rgba(0, 0, 0, 0.1);
-    width: 500px;
+    width: 100%;
     margin: 10px auto 10px auto;
     background-color: rgba(139, 139, 139, 0.05);
 `;
@@ -73,7 +73,7 @@ const Clear = styled.div`
 `;
 
 const MeasurementTypesDiv = styled.div`
-   width: 550px;
+   width: 100%;
    margin: 10px auto 10px auto;
    background-color: rgba(139, 139, 139, 0.1);
 `;
