@@ -58,6 +58,7 @@ const DeleteButton = styled.button`
     font-size: 14px;
     background-color: rgba(139, 139, 139, 0.5);
     color: rgba(0, 0, 0, 0.8);
+    border-color: rgba(139, 139, 139, 0);
 `;
 
 const EditButton = styled.button`
@@ -69,6 +70,7 @@ const EditButton = styled.button`
     background-color: #008b8bad;
     // color: white;
     color: rgba(0, 0, 0, 0.8);
+    border-color: #008b8b00;
 `;
 
 const Clear = styled.div`
@@ -99,7 +101,8 @@ const MeasurementDiv = styled.div`
 
 const MeasurementValuesDiv = styled.div`
     text-align: center;
-    margin: 15px 15px 15px 15px;
+    height: 30px;
+    margin: 15px 15px 35px 15px;
     color: rgba(0, 0, 0, 0.7);
 `;
 
@@ -362,7 +365,7 @@ class App extends Component {
                 <ShowMeasurementsButton onClick={this.showMeasurementTypes}>
                     {/*<i class="fa fa-sort-desc" aria-hidden="true"></i>*/}
                     {/*<i className="fa fa-list" aria-hidden="true"></i>*/}
-                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    <i className="fa fa-chevron-down" aria-hidden="true"></i>
                 </ShowMeasurementsButton>
                 <MeasurementTypesDiv>
                     {MEASUREMENT_TYPES.map((type, index) => {
