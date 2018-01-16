@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import styled from 'styled-components';
 import {MEASUREMENT_TYPES} from 'constants/types';
+import {MEASUREMENT_PERIODS} from 'constants/periods';
 import NewRecordModal from 'components/NewRecordModal';
 import MeasurementChart from 'components/MeasurementChart';
 import EditRecordModal from "./components/EditRecordModal";
@@ -111,6 +112,28 @@ const MeasurementValue = styled.div`
 `;
 
 
+const TimesDiv = styled.div`
+    margin: 10px 15px 10px 15px;
+    background-color: rgba(139, 139, 139, 0.1);
+    color: rgba(0, 0, 0, 0.7);
+   
+`;
+
+const TimeDiv = styled.div`
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    width: 33%;
+    //border: 0.5px solid rgba(0, 0, 0, 0.05);
+    border-left: 0.5px solid rgba(0, 0, 0, 0.05);
+    border-right: 0.5px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+    margin-bottom: 5px;
+    ${({ active }) => active && "background-color: #008b8bad"};
+    cursor: pointer;
+`;
+
+
 
 
 class App extends Component {
@@ -123,7 +146,8 @@ class App extends Component {
         selectedMeasurement: MEASUREMENT_TYPES[0].value,
         startValue: 0,
         currentValue: 0,
-        changes: 0
+        changes: 0,
+        selectedTime: "last_month"
 
     };
 
@@ -205,10 +229,7 @@ class App extends Component {
         }, () => this.saveToLocalStorage())
 
     };
-    //
-    // componentDidCatch(error, info) {
-    //     console.log(error, info);
-    // }
+
 
     componentWillMount(){
         // localStorage.clear();
@@ -260,8 +281,15 @@ class App extends Component {
         this.setState({
             selectedMeasurement: type.value
         }, () => {
+            let start = 0;
+            for (let i = 0; i < this.state.records.length; i++) {
+                if (this.state.records[i].selectedMeasurement) {
+                    start = i;
+                    break;
+                }
+            }
             this.setState({
-                startValue: this.state.records[0][this.state.selectedMeasurement],
+                startValue: start,
                 currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
             }, () => {
                 let diff = this.state.currentValue - this.state.startValue;
@@ -276,7 +304,13 @@ class App extends Component {
                 }
             })
         })
-    }
+    };
+
+    makeSelectTime = (period) => (e) => {
+        this.setState({
+            selectedTime: period
+        })
+    };
 
     render() {
         return (
@@ -297,13 +331,35 @@ class App extends Component {
                     })}
                 </MeasurementTypesDiv>
 
-                <select>
-                    <option>all time</option>
-                    <option>last month</option>
-                    <option>last week</option>
-                </select>
+                <TimesDiv>
+                    {MEASUREMENT_PERIODS.map((period, index) => {
+                        return (
+                            <TimeDiv
+                                key={index}
+                                active={this.state.selectedTime === period.value}
+                                onClick={this.makeSelectTime(period.value)}
+                            >
+                                <p>
+                                    {period.name}
+                                </p>
+                            </TimeDiv>
+                        );
+                    })}
 
-                <MeasurementChart records={this.state.records} measurement={this.state.selectedMeasurement}/>
+                    {/*{["all", "last_month", "last_week"].map((type, index) => {*/}
+                        {/*return (*/}
+                            {/*<TimeDiv*/}
+                                {/*key={index}*/}
+                                {/*active={this.state.selectedTime === type}*/}
+                                {/*onClick={this.makeSelectTime(type)}*/}
+                            {/*>*/}
+                                {/*<p>*/}
+                                    {/*{type}*/}
+                                {/*</p>*/}
+                            {/*</TimeDiv>*/}
+                        {/*);*/}
+                    {/*})}*/}
+                </TimesDiv>
 
                 <MeasurementValuesDiv>
                     <MeasurementValuesName>start:
@@ -318,6 +374,9 @@ class App extends Component {
                         <MeasurementValue>{this.state.changes}</MeasurementValue>
                     </MeasurementValuesName>
                 </MeasurementValuesDiv>
+
+                <MeasurementChart records={this.state.records} measurement={this.state.selectedMeasurement} time={this.state.selectedTime}/>
+
 
                 <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
                     return (

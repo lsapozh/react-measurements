@@ -8,8 +8,18 @@ export default class MeasurementChart extends Component {
     };
 
     render() {
-        const {measurement, records} = this.props;
-        const sortedRecords = [...records.filter((r) => r[measurement])];
+        const {measurement, records, time} = this.props;
+        let filteredDateRecords;
+        if (time === "last_week") {
+            filteredDateRecords = [...records.filter((r) => (new Date() - r.date)/1000/60/60/24 < 7)];
+        } else if (time === "last_month") {
+            filteredDateRecords = [...records.filter((r) => (new Date() - r.date)/1000/60/60/24 < 30)];
+        } else {
+            filteredDateRecords = records;
+        }
+
+
+        const sortedRecords = [...filteredDateRecords.filter((r) => r[measurement])];
         sortedRecords.sort((r1, r2) => r1.date.getTime() - r2.date.getTime());
         const finalRecords = [];
         for (let i = 0; i < sortedRecords.length - 1; i += 1) {
@@ -31,12 +41,14 @@ export default class MeasurementChart extends Component {
         if (sortedRecords.length > 0) {
             finalRecords.push(sortedRecords[sortedRecords.length - 1]);
         }
+        console.log("fn", finalRecords)
         let data = finalRecords.map((record) => {
             return {
                 xValue: this.formatDate(record.date),
                 yValue: record[measurement],
             };
         });
+        console.log("d", data)
 
         return (
             <ResponsiveContainerWrapper>
@@ -46,7 +58,7 @@ export default class MeasurementChart extends Component {
                         margin={{top: 10, right: 17, left: 0, bottom: 0}}
                     >
                         <XAxis dataKey="xValue"/>
-                        <YAxis domain={[0, 'dataMax + 50']}/>
+                        <YAxis domain={[0, 'dataMax + 10']}/>
                         <CartesianGrid strokeDasharray="3 3"/>
                         <Tooltip/>
                         <Area type='linear' dataKey='yValue' stroke='rgba(0, 139, 139, 0.9)'
