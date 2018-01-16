@@ -77,19 +77,23 @@ const Clear = styled.div`
 
 const MeasurementTypesDiv = styled.div`
    //width: 100%;
+   top: 0;
    margin: 10px auto 10px auto;
    background-color: rgba(139, 139, 139, 0.1);
    color: rgba(0, 0, 0, 0.7);
 `;
 
 const MeasurementDiv = styled.div`
-    display: inline-block;
-    font-size: 14px;
+    display: none;
+    font-size: 17px;
     font-weight: 500;
-    width: 14.1%;
-    border: 0.5px solid rgba(0, 0, 0, 0.05);
+    //width: 14.1%;
+    width: 100%;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
     text-align: center;
     ${({ active }) => active && "background-color: #008b8bad"};
+    ${({ active }) => active && "display: inline-block"};
+    // ${({ active }) => active && this.hideNotSelectedTypes}; 
     cursor: pointer;
 `;
 
@@ -131,6 +135,20 @@ const TimeDiv = styled.div`
     margin-bottom: 5px;
     ${({ active }) => active && "background-color: #008b8bad"};
     cursor: pointer;
+`;
+
+const ShowMeasurementsButton = styled.button`
+    position: absolute;
+    top: 18px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    background-color: #008b8b00;
+    border: #008b8b00;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.7);
+    
 `;
 
 
@@ -309,6 +327,8 @@ class App extends Component {
             selectedMeasurement: type.value
         }, () => {
             this.findAndSetMeasurementValues();
+            this.hideNotSelectedTypes(type);
+
         })
     };
 
@@ -318,13 +338,37 @@ class App extends Component {
         })
     };
 
+    showMeasurementTypes = () => {
+        let divs = Array.prototype.slice.call(document.getElementsByClassName("MeasurementDiv"));
+        divs.forEach((div) => {
+            div.style.display = "inline-block";
+        })
+    };
+
+    hideNotSelectedTypes = (type) => {
+        const collection = document.getElementsByClassName("MeasurementDiv");
+        const divs = Array.prototype.slice.call(collection);
+        for (let i = 0; i < divs.length; i++) {
+            if(divs[i].textContent !== type.name) {
+                collection.item(i).style.display = 'none';
+            }
+        }
+
+    };
+
     render() {
         return (
             <div className="app">
+                <ShowMeasurementsButton onClick={this.showMeasurementTypes}>
+                    {/*<i class="fa fa-sort-desc" aria-hidden="true"></i>*/}
+                    <i className="fa fa-list" aria-hidden="true"></i>
+                    {/*<i class="fa fa-chevron-down" aria-hidden="true"></i>*/}
+                </ShowMeasurementsButton>
                 <MeasurementTypesDiv>
                     {MEASUREMENT_TYPES.map((type, index) => {
                         return (
                             <MeasurementDiv
+                                className="MeasurementDiv"
                                 key={index}
                                 active={this.state.selectedMeasurement === type.value}
                                 onClick={this.makeSelectMeasurement(type)}
@@ -351,20 +395,6 @@ class App extends Component {
                             </TimeDiv>
                         );
                     })}
-
-                    {/*{["all", "last_month", "last_week"].map((type, index) => {*/}
-                        {/*return (*/}
-                            {/*<TimeDiv*/}
-                                {/*key={index}*/}
-                                {/*active={this.state.selectedTime === type}*/}
-                                {/*onClick={this.makeSelectTime(type)}*/}
-                            {/*>*/}
-                                {/*<p>*/}
-                                    {/*{type}*/}
-                                {/*</p>*/}
-                            {/*</TimeDiv>*/}
-                        {/*);*/}
-                    {/*})}*/}
                 </TimesDiv>
 
                 <MeasurementValuesDiv>
@@ -420,6 +450,8 @@ class App extends Component {
                 <AddNewRecord className="newRecordButton" onClick={this.openNewRecordModal}>
                     Add New Record
                 </AddNewRecord>
+
+
             </div>
         );
     }
