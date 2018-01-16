@@ -15,12 +15,13 @@ const AddNewRecord = styled.button`
   background-color: lightcoral;
   font-size: 15px;
   font-weight: 600;
-  // color: white;
+  color: rgba(0, 0, 0, 0.8);
 `;
 
 const RecordsDiv = styled.div`
   position: relative;
-  margin: 10px 0 50px 0;
+  margin: 10px 15px 50px 15px;
+  color: rgba(0, 0, 0, 0.8);
 `;
 
 const RecordDiv = styled.div`
@@ -55,7 +56,7 @@ const DeleteButton = styled.button`
     padding: 5px 0 5px 0;
     font-size: 14px;
     background-color: rgba(139, 139, 139, 0.5);
-    
+    color: rgba(0, 0, 0, 0.8);
 `;
 
 const EditButton = styled.button`
@@ -66,6 +67,7 @@ const EditButton = styled.button`
     font-size: 14px;
     background-color: rgba(0, 139, 139, 1);
     // color: white;
+    color: rgba(0, 0, 0, 0.8);
 `;
 
 const Clear = styled.div`
@@ -73,9 +75,10 @@ const Clear = styled.div`
 `;
 
 const MeasurementTypesDiv = styled.div`
-   width: 100%;
+   //width: 100%;
    margin: 10px auto 10px auto;
    background-color: rgba(139, 139, 139, 0.1);
+   color: rgba(0, 0, 0, 0.7);
 `;
 
 const MeasurementDiv = styled.div`
@@ -89,6 +92,26 @@ const MeasurementDiv = styled.div`
     cursor: pointer;
 `;
 
+const MeasurementValuesDiv = styled.div`
+    text-align: center;
+    margin: 15px 15px 15px 15px;
+    color: rgba(0, 0, 0, 0.7);
+`;
+
+const MeasurementValuesName = styled.div`
+    display: inline-block;
+    width: 33%;
+`;
+
+const MeasurementValue = styled.div`
+    margin-top: 10px;
+    font-size: 25px;   
+    color: darkcyan;
+    font-weight: 700;
+`;
+
+
+
 
 class App extends Component {
     state = {
@@ -97,7 +120,11 @@ class App extends Component {
         editRecordId: 0,
         recordForEdit: {},
         records: [],
-        selectedMeasurement: MEASUREMENT_TYPES[0].value
+        selectedMeasurement: MEASUREMENT_TYPES[0].value,
+        startValue: 0,
+        currentValue: 0,
+        changes: 0
+
     };
 
     openNewRecordModal = () => {
@@ -192,10 +219,35 @@ class App extends Component {
             });
             this.setState({
                 records: items
+            }, () => {
+                this.setState({
+                    startValue: this.state.records[0][this.state.selectedMeasurement],
+                    currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
+                }, () => {
+                    let diff = this.state.currentValue - this.state.startValue;
+                    if (diff) {
+                        this.setState({
+                            changes: diff
+                        })
+                    } else {
+                        this.setState({
+                            changes: ""
+                        })
+                    }
+                })
             })
         } else {
             this.setState({
                 records: seedRecords
+            }, () => {
+                this.setState({
+                    startValue: this.state.records[0][this.state.selectedMeasurement],
+                    currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
+                }, () => {
+                    this.setState({
+                        changes: this.state.currentValue - this.state.startValue
+                    })
+                })
             })
         }
     }
@@ -207,6 +259,22 @@ class App extends Component {
     makeSelectMeasurement = (type) => (e) => {
         this.setState({
             selectedMeasurement: type.value
+        }, () => {
+            this.setState({
+                startValue: this.state.records[0][this.state.selectedMeasurement],
+                currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
+            }, () => {
+                let diff = this.state.currentValue - this.state.startValue;
+                if (diff) {
+                    this.setState({
+                        changes: diff
+                    })
+                } else {
+                    this.setState({
+                        changes: ""
+                    })
+                }
+            })
         })
     }
 
@@ -228,7 +296,29 @@ class App extends Component {
                         );
                     })}
                 </MeasurementTypesDiv>
+
+                <select>
+                    <option>all time</option>
+                    <option>last month</option>
+                    <option>last week</option>
+                </select>
+
                 <MeasurementChart records={this.state.records} measurement={this.state.selectedMeasurement}/>
+
+                <MeasurementValuesDiv>
+                    <MeasurementValuesName>start:
+                        <MeasurementValue>{this.state.startValue}</MeasurementValue>
+                    </MeasurementValuesName>
+
+                    <MeasurementValuesName>now:
+                        <MeasurementValue>{this.state.currentValue}</MeasurementValue>
+                    </MeasurementValuesName>
+
+                    <MeasurementValuesName>changes:
+                        <MeasurementValue>{this.state.changes}</MeasurementValue>
+                    </MeasurementValuesName>
+                </MeasurementValuesDiv>
+
                 <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
                     return (
                         <RecordDiv key={index}>

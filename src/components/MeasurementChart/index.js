@@ -43,7 +43,7 @@ export default class MeasurementChart extends Component {
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                         data={data}
-                        margin={{top: 10, right: 0, left: 0, bottom: 0}}
+                        margin={{top: 10, right: 17, left: 0, bottom: 0}}
                     >
                         <XAxis dataKey="xValue"/>
                         <YAxis domain={[0, 'dataMax + 50']}/>
