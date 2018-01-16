@@ -261,14 +261,7 @@ class App extends Component {
             this.setState({
                 records: seedRecords
             }, () => {
-                this.setState({
-                    startValue: this.state.records[0][this.state.selectedMeasurement],
-                    currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
-                }, () => {
-                    this.setState({
-                        changes: this.state.currentValue - this.state.startValue
-                    })
-                })
+                this.findAndSetMeasurementValues();
             })
         }
     }
@@ -277,32 +270,45 @@ class App extends Component {
         localStorage.setItem("records", JSON.stringify(this.state.records));
     };
 
+
+    findAndSetMeasurementValues = () => {
+        let start = 0;
+        let end = 0;
+        for (let i = 0; i < this.state.records.length; i++) {
+            if (this.state.records[i][this.state.selectedMeasurement]) {
+                start = i;
+                break;
+            }
+        }
+
+        for (let i = this.state.records.length - 1; i >= 0; i--) {
+            if (this.state.records[i][this.state.selectedMeasurement]) {
+                end = i;
+                break;
+            }
+        }
+        this.setState({
+            startValue: this.state.records[start][this.state.selectedMeasurement],
+            currentValue: this.state.records[end][this.state.selectedMeasurement],
+        }, () => {
+            let diff = this.state.currentValue - this.state.startValue;
+            if (diff) {
+                this.setState({
+                    changes: diff
+                })
+            } else {
+                this.setState({
+                    changes: ""
+                })
+            }
+        })
+    }
+
     makeSelectMeasurement = (type) => (e) => {
         this.setState({
             selectedMeasurement: type.value
         }, () => {
-            let start = 0;
-            for (let i = 0; i < this.state.records.length; i++) {
-                if (this.state.records[i].selectedMeasurement) {
-                    start = i;
-                    break;
-                }
-            }
-            this.setState({
-                startValue: start,
-                currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
-            }, () => {
-                let diff = this.state.currentValue - this.state.startValue;
-                if (diff) {
-                    this.setState({
-                        changes: diff
-                    })
-                } else {
-                    this.setState({
-                        changes: ""
-                    })
-                }
-            })
+            this.findAndSetMeasurementValues();
         })
     };
 

@@ -5,7 +5,9 @@ const seedRecords = [
     },
     {
         date: new Date(2015, 0, 9),
-        weight: 10
+        weight: 10,
+        chest: 70,
+        underboob: 34
     },
     {
         date: new Date(2016, 0, 9),
@@ -13,7 +15,9 @@ const seedRecords = [
     },
     {
         date: new Date(2016, 11, 9),
-        weight: 20
+        weight: 20,
+        chest: 40,
+        underboob: 55
     },
     {
         date: new Date(2017, 11, 26),

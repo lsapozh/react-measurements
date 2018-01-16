@@ -41,14 +41,13 @@ export default class MeasurementChart extends Component {
         if (sortedRecords.length > 0) {
             finalRecords.push(sortedRecords[sortedRecords.length - 1]);
         }
-        console.log("fn", finalRecords)
+
         let data = finalRecords.map((record) => {
             return {
                 xValue: this.formatDate(record.date),
                 yValue: record[measurement],
             };
         });
-        console.log("d", data)
 
         return (
             <ResponsiveContainerWrapper>
