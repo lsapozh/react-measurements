@@ -10,6 +10,3 @@
  - [x] When app starts check if localstorage is not empty. If it is not empty set initial state. (hint: use `componentWillMount(){...}` on the `App`)
  - [ ] Use `ResponsiveContainer` for chart (hint: http://recharts.org/#/en-US/api/ResponsiveContainer )
  
- 
- функция в стилях
- при inline не работает цвет

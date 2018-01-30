@@ -86,16 +86,16 @@ const MeasurementTypesDiv = styled.div`
 `;
 
 const MeasurementDiv = styled.div`
-    display: none;
     font-size: 17px;
     font-weight: 500;
-    //width: 14.1%;
     width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
     text-align: center;
     ${({ active }) => active && "background-color: #008b8bad"};
-    ${({ active }) => active && "display: inline-block"};
-    // ${({ active }) => active && this.hideNotSelectedTypes}; 
     cursor: pointer;
 `;
 
@@ -123,30 +123,30 @@ const TimesDiv = styled.div`
     margin: 10px 15px 10px 15px;
     background-color: rgba(139, 139, 139, 0.1);
     color: rgba(0, 0, 0, 0.7);
-   
+   display: flex;
+   justify-content: center;
+   height: 30px;
+   align-items: stretch;
 `;
 
 const TimeDiv = styled.div`
-    display: inline-block;
     font-size: 11px;
     font-weight: 500;
-    width: 33%;
-    //border: 0.5px solid rgba(0, 0, 0, 0.05);
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
     border-left: 0.5px solid rgba(0, 0, 0, 0.05);
     border-right: 0.5px solid rgba(0, 0, 0, 0.05);
-    text-align: center;
-    margin-bottom: 5px;
     ${({ active }) => active && "background-color: #008b8bad"};
     cursor: pointer;
 `;
 
-const ShowMeasurementsButton = styled.button`
-    position: absolute;
+const ShowMeasurementsIcon = styled.button`
     top: 18px;
-    right: 15px;
-    width: 40px;
-    height: 40px;
+    right: 10px;
     font-size: 20px;
+    position: absolute;
     background-color: #008b8b00;
     border: #008b8b00;
     cursor: pointer;
@@ -326,13 +326,16 @@ class App extends Component {
     }
 
     makeSelectMeasurement = (type) => (e) => {
-        this.setState({
-            selectedMeasurement: type.value
-        }, () => {
-            this.findAndSetMeasurementValues();
-            this.hideNotSelectedTypes(type);
-
-        })
+        if (this.state.showMeasurementTypes) {
+            this.setState({
+                selectedMeasurement: type.value,
+                showMeasurementTypes: false
+            }, this.findAndSetMeasurementValues)
+        } else {
+            this.setState({
+                showMeasurementTypes: true
+            })
+        }
     };
 
     makeSelectTime = (period) => (e) => {
@@ -342,43 +345,28 @@ class App extends Component {
     };
 
     showMeasurementTypes = () => {
-        let divs = Array.prototype.slice.call(document.getElementsByClassName("MeasurementDiv"));
-        divs.forEach((div) => {
-            div.style.display = "inline-block";
+        this.setState({
+            showMeasurementTypes: true
         })
-    };
-
-    hideNotSelectedTypes = (type) => {
-        const collection = document.getElementsByClassName("MeasurementDiv");
-        const divs = Array.prototype.slice.call(collection);
-        for (let i = 0; i < divs.length; i++) {
-            if(divs[i].textContent !== type.name) {
-                collection.item(i).style.display = 'none';
-            }
-        }
-
     };
 
     render() {
         return (
             <div className="app">
-                <ShowMeasurementsButton onClick={this.showMeasurementTypes}>
-                    {/*<i class="fa fa-sort-desc" aria-hidden="true"></i>*/}
-                    {/*<i className="fa fa-list" aria-hidden="true"></i>*/}
-                    <i className="fa fa-chevron-down" aria-hidden="true"></i>
-                </ShowMeasurementsButton>
                 <MeasurementTypesDiv>
-                    {MEASUREMENT_TYPES.map((type, index) => {
+                    {MEASUREMENT_TYPES.filter((type) => (this.state.selectedMeasurement === type.value) || this.state.showMeasurementTypes).map((type, index) => {
                         return (
                             <MeasurementDiv
-                                className="MeasurementDiv"
                                 key={index}
                                 active={this.state.selectedMeasurement === type.value}
                                 onClick={this.makeSelectMeasurement(type)}
                             >
-                                <p>
-                                    {type.name}
-                                </p>
+                                <span>{type.name}</span>
+                                { index === 0 && (
+                                    <ShowMeasurementsIcon>
+                                        <i className="fa fa-chevron-down" aria-hidden="true"></i>
+                                    </ShowMeasurementsIcon>
+                                )}
                             </MeasurementDiv>
                         );
                     })}
@@ -392,9 +380,7 @@ class App extends Component {
                                 active={this.state.selectedTime === period.value}
                                 onClick={this.makeSelectTime(period.value)}
                             >
-                                <p>
-                                    {period.name}
-                                </p>
+                                    <span>{period.name}</span>
                             </TimeDiv>
                         );
                     })}
