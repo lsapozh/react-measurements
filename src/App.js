@@ -16,7 +16,10 @@ import {DeleteButton} from "./components/recordsDiv/recordButtons/DeleteButton";
 import {ShowMeasurementsIcon} from "./components/icons";
 import {TimeDiv, TimesDiv} from "./components/periods";
 import {MeasurementDiv, MeasurementTypesDiv} from "./components/measurementTypes";
-import {MeasurementValue, MeasurementValuesDiv, MeasurementValuesName} from "./components/recordsDiv/measurementValues";
+import {
+    MeasurementValue, MeasurementValuesDiv,
+    MeasurementValuesName
+} from "./components/Modals/components/measurementValues";
 
 class App extends Component {
     state = {
