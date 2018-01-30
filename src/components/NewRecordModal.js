@@ -16,44 +16,64 @@ const ModalBackdrop = styled.div`
 `;
 
 const ModalBody = styled.div`
-  background-color: #efefef;
+  background-color: #f2f2f2;
   padding: 20px;
+  color: rgba(0, 0, 0, 0.85);
 `;
 
 const ModalActions = styled.div`
   margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid black;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   button {
-    margin-left: 10px;
+   
   }
 `;
 
 const Button = styled.button`
-  font-size: 14px;
-  // border: 1px solid black;
+  font-size: 16px;
   padding: 10px 20px;
-  // border-radius: 5px;
 `;
 
 const CancelButton = styled(Button)`
+  margin-right: 10px;
   background-color: rgba(139, 139, 139, 0.5);
-  // border-color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(139, 139, 139, 0); 
 `;
 
 const CreateButton = styled(Button)`
-  background-color: rgba(0, 139, 139, 1);
-  // color: white;  
+  background-color: #008b8bad;
+  color: rgba(0, 0, 0, 0.8);
+  border-color: #008b8b00; 
 `;
 
 const TypesDiv = styled.div`
-  font-size: 14px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const TypeDiv = styled.div`
    margin-bottom: 5px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   input {
+      height: 30px;
+      width: 50px;
+      font-size: 16px;
+      text-align: right;
+   }
+`;
+
+const Title = styled.div`
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 17px;
+    display: flex;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.8);
 `;
 
 export default class NewRecordModal extends Component {
@@ -88,19 +108,18 @@ export default class NewRecordModal extends Component {
       <ModalBackdrop>
         <ModalBody>
           <form onSubmit={this.submitForm}>
-            <h1>Add New Record</h1>
+            <Title>Add New Record</Title>
             <TypesDiv>
               {MEASUREMENT_TYPES.map((type, index) => {
                 return (
                   <TypeDiv key={index}>
                     <label>
                       {type.name}
-                      <br />
-                      <input
+                    </label>
+                    <input
                         type="number" name={type.value} value={this.state.value[type.value]}
                         onChange={this.createOnChange(type.value)}
-                      />
-                    </label>
+                    />
                   </TypeDiv>
                 );
               })}

@@ -78,7 +78,6 @@ const Clear = styled.div`
 `;
 
 const MeasurementTypesDiv = styled.div`
-   //width: 100%;
    top: 0;
    margin: 10px auto 10px auto;
    background-color: rgba(139, 139, 139, 0.1);
