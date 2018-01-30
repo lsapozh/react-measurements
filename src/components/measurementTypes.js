@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
+import {MEASUREMENT_TYPES} from 'constants/types';
+import {ShowMeasurementsIcon} from "./icons";
 
-export const MeasurementTypesDiv = styled.div`
+
+const MeasurementTypesDiv = styled.div`
    top: 0;
    margin: 10px auto 10px auto;
    background-color: rgba(139, 139, 139, 0.1);
    color: rgba(0, 0, 0, 0.7);
 `;
 
-export const MeasurementDiv = styled.div`
+const MeasurementDiv = styled.div`
     font-size: 17px;
     font-weight: 500;
     width: 100%;
@@ -21,3 +24,28 @@ export const MeasurementDiv = styled.div`
     ${({ active }) => active && "background-color: #008b8bad"};
     cursor: pointer;
 `;
+
+export default class MeasurementTypes extends Component {
+    render() {
+        return (
+            <MeasurementTypesDiv>
+                {MEASUREMENT_TYPES.filter((type) => (this.props.selectedMeasurement === type.value) || this.props.showMeasurementTypes).map((type, index) => {
+                    return (
+                        <MeasurementDiv
+                            key={index}
+                            active={this.props.selectedMeasurement === type.value}
+                            onClick={this.props.onClick(type)}
+                        >
+                            <span>{type.name}</span>
+                            { index === 0 && (
+                                <ShowMeasurementsIcon>
+                                    <i className="fa fa-chevron-down" aria-hidden="true"></i>
+                                </ShowMeasurementsIcon>
+                            )}
+                        </MeasurementDiv>
+                    );
+                })}
+            </MeasurementTypesDiv>
+        )
+    }
+}

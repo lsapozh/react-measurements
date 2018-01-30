@@ -1,25 +1,17 @@
 import React, {Component} from 'react';
+import styled from 'styled-components';
 import './App.css';
 import {MEASUREMENT_TYPES} from 'constants/types';
-import {MEASUREMENT_PERIODS} from 'constants/periods';
 import NewRecordModal from 'components/Modals/NewRecordModal';
 import MeasurementChart from 'components/MeasurementChart';
 import EditRecordModal from "./components/Modals/EditRecordModal";
 import seedRecords from "./constants/seedRecords";
 import {AddNewRecord} from "./components/addNewRecord";
-import {Clear} from "./components/clearBoth";
-import {RecordDiv, RecordsDiv} from "./components/recordsDiv/recordsDiv";
-import {RecordInfoDiv} from "./components/recordsDiv/recordInfoDiv";
-import {RecordButtonsDiv} from "./components/recordsDiv/recordButtons/recordButtonsDiv";
-import {EditButton} from "./components/recordsDiv/recordButtons/EditButton";
-import {DeleteButton} from "./components/recordsDiv/recordButtons/DeleteButton";
-import {ShowMeasurementsIcon} from "./components/icons";
-import {TimeDiv, TimesDiv} from "./components/periods";
-import {MeasurementDiv, MeasurementTypesDiv} from "./components/measurementTypes";
-import {
-    MeasurementValue, MeasurementValuesDiv,
-    MeasurementValuesName
-} from "./components/Modals/components/measurementValues";
+import MeasurementValues from "./components/measurementValues";
+import Periods from "./components/periods";
+import MeasurementTypes from "./components/measurementTypes";
+import Records from "./components/recordsDiv/recordsDiv";
+
 
 class App extends Component {
     state = {
@@ -187,7 +179,7 @@ class App extends Component {
                 })
             }
         })
-    }
+    };
 
     makeSelectMeasurement = (type) => (e) => {
         if (this.state.showMeasurementTypes) {
@@ -217,84 +209,15 @@ class App extends Component {
     render() {
         return (
             <div className="app">
-                <MeasurementTypesDiv>
-                    {MEASUREMENT_TYPES.filter((type) => (this.state.selectedMeasurement === type.value) || this.state.showMeasurementTypes).map((type, index) => {
-                        return (
-                            <MeasurementDiv
-                                key={index}
-                                active={this.state.selectedMeasurement === type.value}
-                                onClick={this.makeSelectMeasurement(type)}
-                            >
-                                <span>{type.name}</span>
-                                { index === 0 && (
-                                    <ShowMeasurementsIcon>
-                                        <i className="fa fa-chevron-down" aria-hidden="true"></i>
-                                    </ShowMeasurementsIcon>
-                                )}
-                            </MeasurementDiv>
-                        );
-                    })}
-                </MeasurementTypesDiv>
+                <MeasurementTypes selectedMeasurement={this.state.selectedMeasurement} showMeasurementTypes={this.state.showMeasurementTypes} onClick={this.makeSelectMeasurement}/>
 
-                <TimesDiv>
-                    {MEASUREMENT_PERIODS.map((period, index) => {
-                        return (
-                            <TimeDiv
-                                key={index}
-                                active={this.state.selectedTime === period.value}
-                                onClick={this.makeSelectTime(period.value)}
-                            >
-                                    <span>{period.name}</span>
-                            </TimeDiv>
-                        );
-                    })}
-                </TimesDiv>
+                <Periods selectedTime={this.state.selectedTime} onClick={this.makeSelectTime}/>
 
-                <MeasurementValuesDiv>
-                    <MeasurementValuesName>start:
-                        <MeasurementValue>{this.state.startValue}</MeasurementValue>
-                    </MeasurementValuesName>
-
-                    <MeasurementValuesName>now:
-                        <MeasurementValue>{this.state.currentValue}</MeasurementValue>
-                    </MeasurementValuesName>
-
-                    <MeasurementValuesName>changes:
-                        <MeasurementValue>{this.state.changes}</MeasurementValue>
-                    </MeasurementValuesName>
-                </MeasurementValuesDiv>
+                <MeasurementValues startValue={this.state.startValue} currentValue={this.state.currentValue} changes={this.state.changes}></MeasurementValues>
 
                 <MeasurementChart records={this.state.records} measurement={this.state.selectedMeasurement} time={this.state.selectedTime}/>
 
-
-                <RecordsDiv className="measurementsTableWrapper">{[...this.state.records].reverse().map((record, index) => {
-                    return (
-                        <RecordDiv key={index}>
-                            <RecordInfoDiv>
-                                <h4>
-                                    {this.formatDate(record.date)}
-                                </h4>
-                                {MEASUREMENT_TYPES.map((type, index) => {
-                                    if (record[type.value]) return (
-                                        <div key={index}>
-                                            <p>
-                                                {type.name + ": " + record[type.value]}
-                                            </p>
-                                        </div>
-                                    );
-                                    return null;
-                                })}
-                            </RecordInfoDiv>
-                            <RecordButtonsDiv>
-                                <EditButton onClick={this.makeEditRecordModal(index)}>Edit</EditButton>
-                                <DeleteButton onClick={this.makeDeleteRecord(index)}>Delete</DeleteButton>
-                            </RecordButtonsDiv>
-                            <Clear></Clear>
-                        </RecordDiv>
-                    );
-
-                })}
-                </RecordsDiv>
+                <Records records={this.state.records} formatDate={this.formatDate} makeEditRecordModal={this.makeEditRecordModal} makeDeleteRecord={this.makeDeleteRecord}/>
 
                 <EditRecordModal record={this.state.recordForEdit} open={this.state.editRecordModalOpen} onClose={this.closeEditRecordModal}
                                  onSubmit={this.editRecord}/>
@@ -303,8 +226,6 @@ class App extends Component {
                 <AddNewRecord className="newRecordButton" onClick={this.openNewRecordModal}>
                     Add New Record
                 </AddNewRecord>
-
-
             </div>
         );
     }
