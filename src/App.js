@@ -1,158 +1,22 @@
 import React, {Component} from 'react';
 import './App.css';
-import styled from 'styled-components';
 import {MEASUREMENT_TYPES} from 'constants/types';
 import {MEASUREMENT_PERIODS} from 'constants/periods';
 import NewRecordModal from 'components/Modals/NewRecordModal';
 import MeasurementChart from 'components/MeasurementChart';
 import EditRecordModal from "./components/Modals/EditRecordModal";
 import seedRecords from "./constants/seedRecords";
-
-const AddNewRecord = styled.button`
-  position: fixed;
-  bottom: 0px;
-  width: 100%;
-  height: 40px;
-  background-color: lightcoral;
-  font-size: 15px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.8);
-  border-color: lightcoral;
-`;
-
-const RecordsDiv = styled.div`
-  position: relative;
-  margin: 10px 15px 50px 15px;
-  color: rgba(0, 0, 0, 0.8);
-`;
-
-const RecordDiv = styled.div`
-    border: 0.5px solid rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin: 10px auto 10px auto;
-    background-color: rgba(139, 139, 139, 0.05);
-`;
-
-const RecordInfoDiv = styled.div`
-    display: inline-block;
-    position: relative;
-    width: 30%;
-    vertical-align: top;
-    margin-left: 15px;
-    font-size: 14px;
-    
-`;
-
-const RecordButtonsDiv = styled.div`
-    display: inline-block;
-    position: relative;
-    float: right;
-    vertical-align: top;
-    width: 20%;
-`;
-
-const DeleteButton = styled.button`
-    float: right;
-    width: 100%;
-    margin: 0px 15px 15px 0;
-    padding: 5px 0 5px 0;
-    font-size: 14px;
-    background-color: rgba(139, 139, 139, 0.5);
-    color: rgba(0, 0, 0, 0.8);
-    border-color: rgba(139, 139, 139, 0);
-`;
-
-const EditButton = styled.button`
-    float: right;
-    width: 100%;
-    margin: 15px 15px 10px 0;
-    padding: 5px 0 5px 0;
-    font-size: 14px;
-    background-color: #008b8bad;
-    // color: white;
-    color: rgba(0, 0, 0, 0.8);
-    border-color: #008b8b00;
-`;
-
-const Clear = styled.div`
-    clear: both;
-`;
-
-const MeasurementTypesDiv = styled.div`
-   top: 0;
-   margin: 10px auto 10px auto;
-   background-color: rgba(139, 139, 139, 0.1);
-   color: rgba(0, 0, 0, 0.7);
-`;
-
-const MeasurementDiv = styled.div`
-    font-size: 17px;
-    font-weight: 500;
-    width: 100%;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
-    text-align: center;
-    ${({ active }) => active && "background-color: #008b8bad"};
-    cursor: pointer;
-`;
-
-const MeasurementValuesDiv = styled.div`
-    text-align: center;
-    height: 30px;
-    margin: 15px 15px 35px 15px;
-    color: rgba(0, 0, 0, 0.7);
-`;
-
-const MeasurementValuesName = styled.div`
-    display: inline-block;
-    width: 33%;
-`;
-
-const MeasurementValue = styled.div`
-    margin-top: 10px;
-    font-size: 25px;   
-    color: darkcyan;
-    font-weight: 700;
-`;
-
-
-const TimesDiv = styled.div`
-    margin: 10px 15px 10px 15px;
-    background-color: rgba(139, 139, 139, 0.1);
-    color: rgba(0, 0, 0, 0.7);
-   display: flex;
-   justify-content: center;
-   height: 30px;
-   align-items: stretch;
-`;
-
-const TimeDiv = styled.div`
-    font-size: 11px;
-    font-weight: 500;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    border-left: 0.5px solid rgba(0, 0, 0, 0.05);
-    border-right: 0.5px solid rgba(0, 0, 0, 0.05);
-    ${({ active }) => active && "background-color: #008b8bad"};
-    cursor: pointer;
-`;
-
-const ShowMeasurementsIcon = styled.button`
-    top: 17px;
-    right: 10px;
-    font-size: 20px;
-    position: absolute;
-    background-color: #008b8b00;
-    border: #008b8b00;
-    cursor: pointer;
-    color: rgba(0, 0, 0, 0.7);
-    
-`;
+import {AddNewRecord} from "./components/addNewRecord";
+import {Clear} from "./components/clearBoth";
+import {RecordDiv, RecordsDiv} from "./components/recordsDiv/recordsDiv";
+import {RecordInfoDiv} from "./components/recordsDiv/recordInfoDiv";
+import {RecordButtonsDiv} from "./components/recordsDiv/recordButtons/recordButtonsDiv";
+import {EditButton} from "./components/recordsDiv/recordButtons/EditButton";
+import {DeleteButton} from "./components/recordsDiv/recordButtons/DeleteButton";
+import {ShowMeasurementsIcon} from "./components/icons";
+import {TimeDiv, TimesDiv} from "./components/periods";
+import {MeasurementDiv, MeasurementTypesDiv} from "./components/measurementTypes";
+import {MeasurementValue, MeasurementValuesDiv, MeasurementValuesName} from "./components/recordsDiv/measurementValues";
 
 class App extends Component {
     state = {
