@@ -3,9 +3,9 @@ import './App.css';
 import styled from 'styled-components';
 import {MEASUREMENT_TYPES} from 'constants/types';
 import {MEASUREMENT_PERIODS} from 'constants/periods';
-import NewRecordModal from 'components/NewRecordModal';
+import NewRecordModal from 'components/Modals/NewRecordModal';
 import MeasurementChart from 'components/MeasurementChart';
-import EditRecordModal from "./components/EditRecordModal";
+import EditRecordModal from "./components/Modals/EditRecordModal";
 import seedRecords from "./constants/seedRecords";
 
 const AddNewRecord = styled.button`
@@ -17,6 +17,7 @@ const AddNewRecord = styled.button`
   font-size: 15px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.8);
+  border-color: lightcoral;
 `;
 
 const RecordsDiv = styled.div`
@@ -142,7 +143,7 @@ const TimeDiv = styled.div`
 `;
 
 const ShowMeasurementsIcon = styled.button`
-    top: 18px;
+    top: 17px;
     right: 10px;
     font-size: 20px;
     position: absolute;
@@ -152,9 +153,6 @@ const ShowMeasurementsIcon = styled.button`
     color: rgba(0, 0, 0, 0.7);
     
 `;
-
-
-
 
 class App extends Component {
     state = {
