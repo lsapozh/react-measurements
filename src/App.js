@@ -49,6 +49,10 @@ class App extends Component {
         });
     };
 
+    addNewRecord = (newRecord) => {
+        this.props.db.collection("measurements").add(newRecord);
+    }
+
     createNewRecord = (values) => {
         this.setState({
             newRecordModalOpened: false,
@@ -60,17 +64,16 @@ class App extends Component {
             return this.formatDate(record.date);
         });
 
-
         if (dates.includes(this.formatDate(newDate))) {
             let id = dates.indexOf(this.formatDate(newDate));
-            console.log(id);
+            // console.log(id);
             this.setState({
                 records: [...this.state.records.slice(0, id), newRecord, ...this.state.records.slice(id + 1, this.state.records.length)]
-            }, () => this.saveToLocalStorage())
+            }, () => {
+                this.props.db.collection("measurements").add({newRecord});
+            })
         } else {
-            this.setState({
-                records: [...this.state.records, newRecord]
-            }, () => this.saveToLocalStorage())
+            this.addNewRecord(newRecord)
         }
 
     };

@@ -16,6 +16,7 @@ export default class NewRecordModal extends Component {
   submitForm = (e) => {
     e.preventDefault();
     this.props.onSubmit(this.state.value);
+    console.log(this.state.value)
     this.setState({
       value: this.emptyValues,
     });
