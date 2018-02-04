@@ -47,8 +47,8 @@ export default class Records extends Component {
                             })}
                         </RecordInfoDiv>
                         <RecordButtonsDiv>
-                            <EditButton onClick={this.props.makeEditRecordModal(index)}>Edit</EditButton>
-                            <DeleteButton onClick={this.props.makeDeleteRecord(index)}><i className="fa fa-times"></i></DeleteButton>
+                            <EditButton onClick={this.props.makeEditRecordModal(record.id)}>Edit</EditButton>
+                            <DeleteButton onClick={this.props.makeDeleteRecord(record.id)}><i className="fa fa-times"></i></DeleteButton>
                         </RecordButtonsDiv>
                         <Clear></Clear>
                     </RecordDiv>

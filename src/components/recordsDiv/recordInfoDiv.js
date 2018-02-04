@@ -1,6 +1,4 @@
-import React, {Component} from 'react';
 import styled from 'styled-components';
-
 
 export const RecordInfoDiv = styled.div`
     display: inline-block;

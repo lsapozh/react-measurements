@@ -3,13 +3,11 @@
 
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
-import styled from 'styled-components';
 import './App.css';
 import {MEASUREMENT_TYPES} from 'constants/types';
 import NewRecordModal from 'components/Modals/NewRecordModal';
 import MeasurementChart from 'components/MeasurementChart';
 import EditRecordModal from "./components/Modals/EditRecordModal";
-import seedRecords from "./constants/seedRecords";
 import {AddNewRecord} from "./components/addNewRecord";
 import MeasurementValues from "./components/measurementValues";
 import Periods from "./components/periods";
@@ -26,7 +24,7 @@ class App extends Component {
         isLoading: true,
         newRecordModalOpened: false,
         editRecordModalOpen: false,
-        editRecordId: 0,
+        editRecordId: null,
         recordForEdit: {},
         records: [],
         selectedMeasurement: MEASUREMENT_TYPES[0].value,
@@ -53,12 +51,9 @@ class App extends Component {
         this.props.db.collection("measurements").add(newRecord);
     };
 
-    updateRecordToDatabase = (numberOfRecord, record) => {
-        let id = this.state.records[numberOfRecord].id;
+    updateRecordToDatabase = (id, record) => {
         this.props.db.collection("measurements").doc(id).set(record);
     };
-
-
 
     createNewRecord = (values) => {
         this.setState({
@@ -67,13 +62,10 @@ class App extends Component {
         const newRecord = values;
         const newDate = new Date();
         newRecord.date = newDate;
-        let dates = this.state.records.map((record) => {
-            return this.formatDate(record.date);
-        });
+        const foundRecord = this.state.records.filter((record) => this.formatDate(record.date) == this.formatDate(newDate))[0];
 
-        if (dates.includes(this.formatDate(newDate))) {
-            let numberOfRecord = dates.indexOf(this.formatDate(newDate));
-            this.updateRecordToDatabase(numberOfRecord, newRecord);
+        if (foundRecord) {
+            this.updateRecordToDatabase(foundRecord.id, newRecord);
         } else {
             this.addNewRecordToDatabase(newRecord);
         }
@@ -84,20 +76,16 @@ class App extends Component {
         return d ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` : ''
     };
 
-    makeDeleteRecord = (index) => (e) => {
-        const numberOfRecord = this.state.records.length - index - 1;
-        const id = this.state.records[numberOfRecord].id;
+    makeDeleteRecord = (id) => (e) => {
         this.props.db.collection("measurements").doc(id).delete();
-
     };
 
     makeEditRecordModal = (id) => (e) => {
-        const indexEdit = this.state.records.length - id - 1;
-        const currentRecord = this.state.records[indexEdit];
+        const currentRecord = this.state.records.filter(r => r.id === id)[0];
         this.setState({
             recordForEdit: currentRecord,
             editRecordModalOpen: true,
-            editRecordId: indexEdit
+            editRecordId: id
         });
     };
 
@@ -114,9 +102,7 @@ class App extends Component {
         });
         const numberOfRecord = this.state.editRecordId;
         this.updateRecordToDatabase(numberOfRecord, value);
-
     };
-
 
     componentWillMount(){
         this.props.db.collection("measurements").orderBy("date").onSnapshot((query) => {
