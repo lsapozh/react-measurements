@@ -121,7 +121,7 @@ class App extends Component {
 
 
     componentWillMount(){
-        this.props.db.collection("measurements").get().then((query) => {
+        this.props.db.collection("measurements").onSnapshot((query) => {
           const records = [];
           query.forEach((r) => {
               const data = r.data();
