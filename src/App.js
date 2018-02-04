@@ -49,9 +49,16 @@ class App extends Component {
         });
     };
 
-    addNewRecord = (newRecord) => {
+    addNewRecordToDatabase = (newRecord) => {
         this.props.db.collection("measurements").add(newRecord);
-    }
+    };
+
+    updateRecordToDatabase = (numberOfRecord, record) => {
+        let id = this.state.records[numberOfRecord].id;
+        this.props.db.collection("measurements").doc(id).set(record);
+    };
+
+
 
     createNewRecord = (values) => {
         this.setState({
@@ -65,15 +72,10 @@ class App extends Component {
         });
 
         if (dates.includes(this.formatDate(newDate))) {
-            let id = dates.indexOf(this.formatDate(newDate));
-            // console.log(id);
-            this.setState({
-                records: [...this.state.records.slice(0, id), newRecord, ...this.state.records.slice(id + 1, this.state.records.length)]
-            }, () => {
-                this.props.db.collection("measurements").add({newRecord});
-            })
+            let numberOfRecord = dates.indexOf(this.formatDate(newDate));
+            this.updateRecordToDatabase(numberOfRecord, newRecord);
         } else {
-            this.addNewRecord(newRecord)
+            this.addNewRecordToDatabase(newRecord);
         }
 
     };
@@ -83,11 +85,10 @@ class App extends Component {
     };
 
     makeDeleteRecord = (index) => (e) => {
-        const indexToDelete = this.state.records.length - index - 1;
-        const newRecords = [...this.state.records.slice(0, indexToDelete), ...this.state.records.slice(indexToDelete + 1, this.state.records.length)]
-        this.setState({
-            records: newRecords
-        }, () => this.saveToLocalStorage())
+        const numberOfRecord = this.state.records.length - index - 1;
+        const id = this.state.records[numberOfRecord].id;
+        this.props.db.collection("measurements").doc(id).delete();
+
     };
 
     makeEditRecordModal = (id) => (e) => {
@@ -111,17 +112,14 @@ class App extends Component {
         this.setState({
             editRecordModalOpen: false,
         });
-        const editedRecord = value;
-        const id = this.state.editRecordId;
-        this.setState({
-            records: [...this.state.records.slice(0, id), editedRecord, ...this.state.records.slice(id + 1, this.state.records.length)]
-        }, () => this.saveToLocalStorage())
+        const numberOfRecord = this.state.editRecordId;
+        this.updateRecordToDatabase(numberOfRecord, value);
 
     };
 
 
     componentWillMount(){
-        this.props.db.collection("measurements").onSnapshot((query) => {
+        this.props.db.collection("measurements").orderBy("date").onSnapshot((query) => {
           const records = [];
           query.forEach((r) => {
               const data = r.data();
@@ -151,11 +149,6 @@ class App extends Component {
           });
         })
     }
-
-    saveToLocalStorage = () => {
-        localStorage.setItem("records", JSON.stringify(this.state.records));
-    };
-
 
     findAndSetMeasurementValues = () => {
         let start = 0;
@@ -217,7 +210,7 @@ class App extends Component {
 
     renderLoader = () => (
       <div>Loading...</div>
-    )
+    );
 
     render() {
         return (
