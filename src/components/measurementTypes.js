@@ -21,7 +21,12 @@ const MeasurementDiv = styled.div`
     justify-content: center;
     border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
     text-align: center;
-    ${({ active }) => active && "background-color: #008b8bad"};
+    i {
+      color: rgba(0, 0, 0, 0.7);
+    }
+    ${({ active }) => active && "background-color: #57acad"};
+    ${({ active }) => active && "color: white"};
+    ${({ active }) => active && "i { color: white; } "};
     cursor: pointer;
 `;
 

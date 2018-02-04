@@ -8,10 +8,14 @@ import {DeleteButton} from "./recordButtons/DeleteButton";
 import {Clear} from "../clearBoth";
 
 const RecordDiv = styled.div`
+    padding-top: 14px;
     border: 0.5px solid rgba(0, 0, 0, 0.1);
     width: 100%;
     margin: 10px auto 10px auto;
     background-color: rgba(139, 139, 139, 0.05);
+    h4 {
+      margin-top: 0;
+    }
 `;
 
 const RecordsDiv = styled.div`
@@ -44,7 +48,7 @@ export default class Records extends Component {
                         </RecordInfoDiv>
                         <RecordButtonsDiv>
                             <EditButton onClick={this.props.makeEditRecordModal(index)}>Edit</EditButton>
-                            <DeleteButton onClick={this.props.makeDeleteRecord(index)}>Delete</DeleteButton>
+                            <DeleteButton onClick={this.props.makeDeleteRecord(index)}><i className="fa fa-times"></i></DeleteButton>
                         </RecordButtonsDiv>
                         <Clear></Clear>
                     </RecordDiv>

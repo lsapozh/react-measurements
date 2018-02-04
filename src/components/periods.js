@@ -13,7 +13,7 @@ const TimesDiv = styled.div`
     `;
 
 const TimeDiv = styled.div`
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     flex: 1;
     justify-content: center;
@@ -21,7 +21,8 @@ const TimeDiv = styled.div`
     display: flex;
     border-left: 0.5px solid rgba(0, 0, 0, 0.05);
     border-right: 0.5px solid rgba(0, 0, 0, 0.05);
-    ${({ active }) => active && "background-color: #008b8bad"};
+    ${({ active }) => active && "background-color: #57acad"};
+    ${({ active }) => active && "color: white; "};
     cursor: pointer;
 `;
 

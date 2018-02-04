@@ -9,6 +9,4 @@ export const ShowMeasurementsIcon = styled.button`
     background-color: #008b8b00;
     border: #008b8b00;
     cursor: pointer;
-    color: rgba(0, 0, 0, 0.7);
-    
 `;

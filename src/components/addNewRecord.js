@@ -6,9 +6,9 @@ export const AddNewRecord = styled.button`
   bottom: 0px;
   width: 100%;
   height: 40px;
-  background-color: lightcoral;
+  background-color: #00857b;
   font-size: 15px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.8);
-  border-color: lightcoral;
+  color: white;
+  border: none;
 `;

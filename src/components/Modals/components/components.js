@@ -39,7 +39,7 @@ export const CancelButton = styled(Button)`
 `;
 
 export const SubmitButton = styled(Button)`
-  background-color: #008b8bad;
+  background-color: #57acad;
   color: rgba(0, 0, 0, 0.8);
   border-color: #008b8b00; 
 `;

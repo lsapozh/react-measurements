@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 
 export const RecordButtonsDiv = styled.div`
-    display: inline-block;
+    display: flex;
     position: relative;
     float: right;
-    vertical-align: top;
     width: 20%;
+    right: 14px;
+    justify-content: center;
+    align-items: center;
 `;
