@@ -1,8 +1,11 @@
 // https://firebase.google.com/docs/firestore/quickstart
 // https://firebase.google.com/docs/firestore/query-data/get-data
+// https://github.com/firebase/firebaseui-web
 
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
+import firebaseui from "firebaseui"
+import 'firebaseui/dist/firebaseui.css';
 import './App.css';
 import {MEASUREMENT_TYPES} from 'constants/types';
 import NewRecordModal from 'components/Modals/NewRecordModal';
@@ -17,10 +20,12 @@ import Records from "./components/recordsDiv/recordsDiv";
 
 class App extends Component {
     static propTypes = {
-      db: PropTypes.object.isRequired
+      db: PropTypes.object.isRequired,
+      firebase: PropTypes.object.isRequired
     };
 
     state = {
+        user: null,
         isLoading: true,
         newRecordModalOpened: false,
         editRecordModalOpen: false,
@@ -104,37 +109,60 @@ class App extends Component {
         this.updateRecordToDatabase(numberOfRecord, value);
     };
 
-    componentWillMount(){
-        this.props.db.collection("measurements").orderBy("date").onSnapshot((query) => {
-          const records = [];
-          query.forEach((r) => {
-              const data = r.data();
-              data.id = r.id;
-              records.push(data);
-          });
+    subscribe = () => {
+      this.unsubscribe = this.props.db.collection("measurements").orderBy("date").onSnapshot((query) => {
+        const records = [];
+        query.forEach((r) => {
+          const data = r.data();
+          data.id = r.id;
+          records.push(data);
+        });
+        this.setState({
+          records,
+          isLoading: false
+        }, () => {
+          const records = this.state.records;
           this.setState({
-            records,
-            isLoading: false
+            startValue: records.length > 0 ? records[0][this.state.selectedMeasurement] : 0,
+            currentValue: records.length > 0 ? records[records.length - 1][this.state.selectedMeasurement] : 0,
           }, () => {
-            const records = this.state.records;
-            this.setState({
-                startValue: records.length > 0 ? records[0][this.state.selectedMeasurement] : 0,
-                currentValue: records.length > 0 ? records[records.length - 1][this.state.selectedMeasurement] : 0,
-            }, () => {
-                let diff = this.state.currentValue - this.state.startValue;
-                if (diff) {
-                    this.setState({
-                        changes: diff
-                    })
-                } else {
-                    this.setState({
-                        changes: ""
-                    })
-                }
-            })
-          });
-        })
+            let diff = this.state.currentValue - this.state.startValue;
+            if (diff) {
+              this.setState({
+                changes: diff
+              })
+            } else {
+              this.setState({
+                changes: ""
+              })
+            }
+          })
+        });
+      });
+    };
+
+    componentWillMount(){
+        this.props.firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              console.log(user)
+              this.setState({
+                user
+              }, this.subscribe)
+            } else {
+              if (this.unsubscribe) {
+                this.unsubscribe()
+              }
+              this.setState({
+                user: null
+              }, this.showAuth)
+            }
+         })
     }
+
+    saveToLocalStorage = () => {
+        localStorage.setItem("records", JSON.stringify(this.state.records));
+    };
+
 
     findAndSetMeasurementValues = () => {
         let start = 0;
@@ -198,9 +226,42 @@ class App extends Component {
       <div>Loading...</div>
     );
 
+
+    showAuth = () => {
+      const firebase = this.props.firebase;
+      const uiConfig = {
+        signInSuccessUrl: '/',
+        signInOptions: [
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID
+        ],
+        tosUrl: '/'
+      };
+
+      // Initialize the FirebaseUI Widget using Firebase.
+      const ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+      this.authUi = ui
+    };
+
+    renderAuth = () => {
+        return (
+          <div id="firebaseui-auth-container"></div>
+        )
+    };
+
+    logout = () => {
+        this.props.firebase.auth().signOut()
+    };
+
     render() {
+        if (!this.state.user) {
+            return this.renderAuth();
+        }
         return (
             <div className="app">
+                {/*<button onClick={this.logout}>Log Out</button>*/}
                 <MeasurementTypes selectedMeasurement={this.state.selectedMeasurement} showMeasurementTypes={this.state.showMeasurementTypes} onClick={this.makeSelectMeasurement}/>
 
                 <Periods selectedTime={this.state.selectedTime} onClick={this.makeSelectTime}/>

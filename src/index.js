@@ -19,6 +19,6 @@ firebase.initializeApp(config);
 
 const db = firebase.firestore();
 window.db = db
-ReactDOM.render(<App db={db} />, document.getElementById('root'));
+ReactDOM.render(<App firebase={firebase} db={db} />, document.getElementById('root'));
 registerServiceWorker();
 
