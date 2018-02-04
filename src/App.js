@@ -1,4 +1,8 @@
+// https://firebase.google.com/docs/firestore/quickstart
+// https://firebase.google.com/docs/firestore/query-data/get-data
+
 import React, {Component} from 'react';
+import PropTypes from "prop-types";
 import styled from 'styled-components';
 import './App.css';
 import {MEASUREMENT_TYPES} from 'constants/types';
@@ -14,7 +18,12 @@ import Records from "./components/recordsDiv/recordsDiv";
 
 
 class App extends Component {
+    static propTypes = {
+      db: PropTypes.object.isRequired
+    };
+
     state = {
+        isLoading: true,
         newRecordModalOpened: false,
         editRecordModalOpen: false,
         editRecordId: 0,
@@ -109,38 +118,35 @@ class App extends Component {
 
 
     componentWillMount(){
-        // localStorage.clear();
-        if (localStorage.getItem("records")) {
-            let items = JSON.parse(localStorage.getItem("records"));
-            items.forEach((record) => {
-                record.date = new Date(record.date);
-            });
+        this.props.db.collection("measurements").get().then((query) => {
+          const records = [];
+          query.forEach((r) => {
+              const data = r.data();
+              data.id = r.id;
+              records.push(data);
+          });
+          this.setState({
+            records,
+            isLoading: false
+          }, () => {
+            const records = this.state.records;
             this.setState({
-                records: items
+                startValue: records.length > 0 ? records[0][this.state.selectedMeasurement] : 0,
+                currentValue: records.length > 0 ? records[records.length - 1][this.state.selectedMeasurement] : 0,
             }, () => {
-                this.setState({
-                    startValue: this.state.records[0][this.state.selectedMeasurement],
-                    currentValue: this.state.records[this.state.records.length - 1][this.state.selectedMeasurement],
-                }, () => {
-                    let diff = this.state.currentValue - this.state.startValue;
-                    if (diff) {
-                        this.setState({
-                            changes: diff
-                        })
-                    } else {
-                        this.setState({
-                            changes: ""
-                        })
-                    }
-                })
+                let diff = this.state.currentValue - this.state.startValue;
+                if (diff) {
+                    this.setState({
+                        changes: diff
+                    })
+                } else {
+                    this.setState({
+                        changes: ""
+                    })
+                }
             })
-        } else {
-            this.setState({
-                records: seedRecords
-            }, () => {
-                this.findAndSetMeasurementValues();
-            })
-        }
+          });
+        })
     }
 
     saveToLocalStorage = () => {
@@ -206,6 +212,10 @@ class App extends Component {
         })
     };
 
+    renderLoader = () => (
+      <div>Loading...</div>
+    )
+
     render() {
         return (
             <div className="app">
@@ -217,7 +227,8 @@ class App extends Component {
 
                 <MeasurementChart records={this.state.records} measurement={this.state.selectedMeasurement} time={this.state.selectedTime}/>
 
-                <Records records={this.state.records} formatDate={this.formatDate} makeEditRecordModal={this.makeEditRecordModal} makeDeleteRecord={this.makeDeleteRecord}/>
+              { this.state.isLoading && this.renderLoader() }
+              { !this.state.isLoading && <Records records={this.state.records} formatDate={this.formatDate} makeEditRecordModal={this.makeEditRecordModal} makeDeleteRecord={this.makeDeleteRecord}/> }
 
                 <EditRecordModal record={this.state.recordForEdit} open={this.state.editRecordModalOpen} onClose={this.closeEditRecordModal}
                                  onSubmit={this.editRecord}/>
