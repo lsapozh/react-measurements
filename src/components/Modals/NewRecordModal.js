@@ -47,6 +47,7 @@ export default class NewRecordModal extends Component {
                     <input
                         type="number" name={type.value} value={this.state.value[type.value]}
                         onChange={this.createOnChange(type.value)}
+                        step="0.1"
                     />
                   </TypeDiv>
                 );
