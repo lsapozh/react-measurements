@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { MEASUREMENT_TYPES } from 'constants/types';
 import {ModalBackdrop, ModalBody, ModalActions, CancelButton, SubmitButton, TypesDiv, TypeDiv, Title} from 'components/Modals/components/components';
 
-export default class NewRecordModal extends Component {
+export default class EditRecordModal extends Component {
 
     state = {
         value: this.props.record
